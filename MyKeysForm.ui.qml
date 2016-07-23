@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.3
 Item {
     property alias passwordField: passwordField
     property alias accountList: accountList
+    property alias newAccountButton: newAccountButton
+    property alias deleteAccountButton: deleteAccountButton
     ColumnLayout {
         id: columnLayout1
         anchors.fill: parent
@@ -18,32 +20,27 @@ Item {
 
         ListView {
             id: accountList
-            x: 0
-            y: 0
-            width: 110
+            width: 400
             height: 160
-            Layout.fillWidth: false
+            Layout.fillHeight: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            model: ListModel {
-                ListElement {
-                    name: "Grey"
-                    colorCode: "grey"
-                }
+        }
 
-                ListElement {
-                    name: "Red"
-                    colorCode: "red"
-                }
+        RowLayout {
+            id: rowLayout1
+            width: 100
+            height: 100
+            spacing: 20
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
-                ListElement {
-                    name: "Blue"
-                    colorCode: "blue"
-                }
+            Button {
+                id: newAccountButton
+                text: qsTr("New Account")
+            }
 
-                ListElement {
-                    name: "Green"
-                    colorCode: "green"
-                }
+            Button {
+                id: deleteAccountButton
+                text: qsTr("Delete Account")
             }
         }
     }
