@@ -6,21 +6,17 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
-    title: qsTr("Hello World")
+    title: qsTr("Steem Pressure")
 
     SwipeView {
         id: swipeView
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
 
-        Page1 {
+        GenerateKeysPage {
         }
 
-        Page {
-            Label {
-                text: qsTr("Second page")
-                anchors.centerIn: parent
-            }
+        MyKeysPage {
         }
     }
 
@@ -28,10 +24,10 @@ ApplicationWindow {
         id: tabBar
         currentIndex: swipeView.currentIndex
         TabButton {
-            text: qsTr("First")
+            text: qsTr("Generate Keys")
         }
         TabButton {
-            text: qsTr("Second")
+            text: qsTr("My Keys")
         }
     }
 }

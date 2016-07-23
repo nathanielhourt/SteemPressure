@@ -12,10 +12,13 @@ Application {
     cpp.cxxLanguageVersion: "c++14"
 
     files: [
+        "AccountKeys.cpp",
+        "AccountKeys.hpp",
         "KeyPair.cpp",
         "KeyPair.hpp",
+        "KeyStore.cpp",
+        "KeyStore.hpp",
         "main.cpp",
         "qml.qrc",
-        "*.qml",
     ]
 }

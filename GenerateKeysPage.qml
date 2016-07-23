@@ -2,7 +2,7 @@ import QtQuick 2.7
 
 import com.nathanhourt.steem.crypto 1.0
 
-Page1Form {
+GenerateKeysForm {
     KeyPair {
         id: keyPair
     }

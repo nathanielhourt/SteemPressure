@@ -30,12 +30,10 @@ KeyPair::KeyPair(QObject *parent)
 }
 
 void KeyPair::generateFromSeed(QString seed) {
-    qDebug() << "Generating from seed" << seed;
     setKey(fc::ecc::private_key::regenerate(fc::sha256::hash(seed.toStdString())));
 }
 
 void KeyPair::generateRandomly() {
-    qDebug() << "Generating randomly";
     setKey(fc::ecc::private_key::generate());
 }
 
