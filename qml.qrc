@@ -7,5 +7,7 @@
         <file>MyKeysForm.ui.qml</file>
         <file>FadeOnVisible.qml</file>
         <file>AddAccountPopup.qml</file>
+        <file>ShadowedPopup.qml</file>
+        <file>res/steem.svg</file>
     </qresource>
 </RCC>

@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
 Item {
     property alias passwordField: passwordField
@@ -35,11 +36,25 @@ Item {
                 id: emptyAccountListPlaceHolder
                 anchors.fill: parent
 
+                Image {
+                    id: image1
+                    opacity: .1
+                    sourceSize.height: 100
+                    height: 100
+                    width: 100
+                    anchors.centerIn: parent
+                    source: "qrc:/res/steem.svg"
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    layer.enabled: true
+                    layer.effect: Colorize {
+                        saturation: 0
+                    }
+                }
                 Label {
                     id: emptyAccountListLabel
                     text: qsTr("No accounts yet... <a href='add'>Add one</a>!")
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.centerIn: parent
                 }
             }
         }
