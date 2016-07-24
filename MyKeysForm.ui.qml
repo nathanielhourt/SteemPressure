@@ -7,8 +7,14 @@ Item {
     property alias accountList: accountList
     property alias newAccountButton: newAccountButton
     property alias deleteAccountButton: deleteAccountButton
+    property alias emptyAccountListLabel: emptyAccountListLabel
+    property alias emptyAccountListPlaceHolder: emptyAccountListPlaceHolder
     ColumnLayout {
         id: columnLayout1
+        anchors.rightMargin: 20
+        anchors.leftMargin: 20
+        anchors.bottomMargin: 20
+        anchors.topMargin: 20
         anchors.fill: parent
 
         TextField {
@@ -24,6 +30,18 @@ Item {
             height: 160
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+            FadeOnVisible {
+                id: emptyAccountListPlaceHolder
+                anchors.fill: parent
+
+                Label {
+                    id: emptyAccountListLabel
+                    text: qsTr("No accounts yet... <a href='add'>Add one</a>!")
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
         }
 
         RowLayout {

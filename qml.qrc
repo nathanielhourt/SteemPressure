@@ -5,5 +5,7 @@
         <file>GenerateKeysPage.qml</file>
         <file>MyKeysPage.qml</file>
         <file>MyKeysForm.ui.qml</file>
+        <file>FadeOnVisible.qml</file>
+        <file>AddAccountPopup.qml</file>
     </qresource>
 </RCC>

@@ -17,7 +17,7 @@ public:
 signals:
 
 public slots:
-    void addAccount();
+    void addAccount(QString name);
 };
 
 #endif // KEYSTORE_HPP

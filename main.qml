@@ -8,26 +8,7 @@ ApplicationWindow {
     height: 480
     title: qsTr("Steem Pressure")
 
-    SwipeView {
-        id: swipeView
+    MyKeysPage {
         anchors.fill: parent
-        currentIndex: tabBar.currentIndex
-
-        GenerateKeysPage {
-        }
-
-        MyKeysPage {
-        }
-    }
-
-    footer: TabBar {
-        id: tabBar
-        currentIndex: swipeView.currentIndex
-        TabButton {
-            text: qsTr("Generate Keys")
-        }
-        TabButton {
-            text: qsTr("My Keys")
-        }
     }
 }

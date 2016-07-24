@@ -6,7 +6,7 @@ KeyStore::KeyStore(QObject *parent)
 
 }
 
-void KeyStore::addAccount() {
+void KeyStore::addAccount(QString name) {
     m_accountList->append(new AccountKeys(this));
-    m_accountList->last()->setName(tr("new-account"));
+    m_accountList->last()->setName(name);
 }
