@@ -12,6 +12,7 @@ Project {
         Depends { name: "libqtqmltricks-qtqmlmodels" }
 
         cpp.cxxLanguageVersion: "c++14"
+        cpp.includePaths: "vendor/QuickPromise"
 
         files: [
             "AccountKeys.cpp",
@@ -20,8 +21,13 @@ Project {
             "KeyPair.hpp",
             "KeyStore.cpp",
             "KeyStore.hpp",
+            "Promise.cpp",
+            "Promise.hpp",
             "main.cpp",
             "qml.qrc",
+            "vendor/QuickPromise/qptimer.h",
+            "vendor/QuickPromise/qptimer.cpp",
+            "vendor/QuickPromise/quickpromise.qrc",
         ]
     }
 

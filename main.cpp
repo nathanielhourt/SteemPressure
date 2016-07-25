@@ -14,6 +14,9 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    // For benlau's quickpromise library
+    engine.addImportPath("qrc:/");
+
     registerQtQmlTricksSmartDataModel(&engine);
 
     qmlRegisterType<KeyPair>("com.nathanhourt.steem.crypto", 1, 0, "KeyPair");
