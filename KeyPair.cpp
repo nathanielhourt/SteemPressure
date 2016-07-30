@@ -94,6 +94,19 @@ void KeyPair::fromWifKey(QString wifKey) {
     }
 }
 
+void KeyPair::fromAuthority(QVariantMap authority) {
+    if (!isSupportedAuthority(authority)) {
+        qDebug() << "Cannot create KeyPair from unsupported authority" << authority;
+        setKey(false);
+    }
+
+    auto keyAndWeight = authority["key_auths"].toList().first().toList();
+    if (keyAndWeight[1].toInt() < authority["weight_threshold"].toInt())
+        setKey(false);
+    else
+        fromPublicKey(keyAndWeight[0].toString());
+}
+
 QString KeyPair::publicKey() {
     binary_key keyData;
     if (keyType() == PublicKey)
@@ -126,4 +139,12 @@ KeyPair::KeyType KeyPair::keyType() const {
     if (key.which() == decltype(key)::tag<fc::ecc::public_key>::value)
         return PublicKey;
     return PrivateKey;
+}
+
+bool KeyPair::isSupportedAuthority(QVariantMap authority) {
+    if (!authority["account_auths"].toList().isEmpty())
+        return false;
+    if (authority["key_auths"].toList().size() != 1)
+        return false;
+    return true;
 }

@@ -1,13 +1,15 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>GenerateKeysForm.ui.qml</file>
-        <file>GenerateKeysPage.qml</file>
+        <file>EditKeysForm.ui.qml</file>
+        <file>EditKeysPage.qml</file>
         <file>MyKeysPage.qml</file>
         <file>MyKeysForm.ui.qml</file>
         <file>FadeOnVisible.qml</file>
         <file>AddAccountPopup.qml</file>
         <file>ShadowedPopup.qml</file>
         <file>res/steem.svg</file>
+        <file>KeyDelegate.qml</file>
+        <file>AccountDelegate.qml</file>
     </qresource>
 </RCC>

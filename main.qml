@@ -8,7 +8,11 @@ ApplicationWindow {
     height: 480
     title: qsTr("Steem Pressure")
 
-    MyKeysPage {
+    StackView {
+        id: mainStack
         anchors.fill: parent
+
+        initialItem: MyKeysPage {
+        }
     }
 }

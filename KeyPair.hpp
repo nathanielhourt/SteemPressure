@@ -2,6 +2,7 @@
 #define KEYPAIR_HPP
 
 #include <QObject>
+#include <QVariantMap>
 
 #include <fc/crypto/elliptic.hpp>
 #include <fc/static_variant.hpp>
@@ -38,11 +39,17 @@ public:
     Q_INVOKABLE void generateRandomly();
     Q_INVOKABLE void fromPublicKey(QString publicKey);
     Q_INVOKABLE void fromWifKey(QString wifKey);
+    Q_INVOKABLE void fromAuthority(QVariantMap authority);
+
+    /// Makes a deep copy of this keypair. Caller takes ownership of returned KeyPair.
+    Q_INVOKABLE KeyPair* deepCopy() { return new KeyPair(*this); }
 
     Q_INVOKABLE QString publicKey();
     Q_INVOKABLE QString wifKey();
 
     KeyType keyType() const;
+
+    static bool isSupportedAuthority(QVariantMap authority);
 
 signals:
     void keyTypeChanged(KeyType);

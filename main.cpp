@@ -1,6 +1,7 @@
 #include "KeyPair.hpp"
 #include "KeyStore.hpp"
 #include "AccountKeys.hpp"
+#include "QmlJsonRpcProvider.hpp"
 
 #include <QtQmlTricksPlugin_SmartDataModels.h>
 
@@ -22,6 +23,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<KeyPair>("com.nathanhourt.steem.crypto", 1, 0, "KeyPair");
     qmlRegisterType<KeyStore>("com.nathanhourt.steem.accounts", 1, 0, "KeyStore");
     qmlRegisterType<AccountKeys>("com.nathanhourt.steem.accounts", 1, 0, "AccountKeys");
+    qmlRegisterType<QmlJsonRpcProvider>("com.nathanhourt.rpc", 1, 0, "JsonRpcProvider");
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
 

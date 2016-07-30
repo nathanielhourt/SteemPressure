@@ -3,13 +3,13 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
-Item {
-    property alias passwordField: passwordField
+Page {
     property alias accountList: accountList
     property alias newAccountButton: newAccountButton
     property alias deleteAccountButton: deleteAccountButton
     property alias emptyAccountListLabel: emptyAccountListLabel
     property alias emptyAccountListPlaceHolder: emptyAccountListPlaceHolder
+
     ColumnLayout {
         id: columnLayout1
         anchors.rightMargin: 20
@@ -18,17 +18,11 @@ Item {
         anchors.topMargin: 20
         anchors.fill: parent
 
-        TextField {
-            id: passwordField
-            placeholderText: qsTr("Password")
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            echoMode: TextField.Password
-        }
-
         ListView {
             id: accountList
             width: 400
             height: 160
+            clip: true
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 

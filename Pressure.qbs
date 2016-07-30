@@ -23,6 +23,8 @@ Project {
             "KeyStore.hpp",
             "Promise.cpp",
             "Promise.hpp",
+            "QmlJsonRpcProvider.cpp",
+            "QmlJsonRpcProvider.hpp",
             "main.cpp",
             "qml.qrc",
             "vendor/QuickPromise/qptimer.h",
