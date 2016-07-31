@@ -43,9 +43,12 @@ public:
 
     /// Makes a deep copy of this keypair. Caller takes ownership of returned KeyPair.
     Q_INVOKABLE KeyPair* deepCopy() { return new KeyPair(*this); }
+    /// Overwrites this key with other
+    Q_INVOKABLE KeyPair* replaceWith(const KeyPair* other);
 
     Q_INVOKABLE QString publicKey();
     Q_INVOKABLE QString wifKey();
+    Q_INVOKABLE QVariantMap toAuthority();
 
     KeyType keyType() const;
 

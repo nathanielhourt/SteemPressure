@@ -9,7 +9,7 @@ import com.nathanhourt.rpc 1.0
 ItemDelegate {
     onClicked: ListView.view.currentIndex = index
 
-    signal editKey(KeyPair key)
+    signal editKey(string authorityLevel, KeyPair key)
 
     contentItem: Column {
         spacing: 4
@@ -21,25 +21,25 @@ ItemDelegate {
             keyName: qsTr("Owner key")
             key: ownerKey
             width: parent.width
-            editButton.onClicked: editKey(ownerKey)
+            editButton.onClicked: editKey("owner", ownerKey)
         }
         KeyDelegate {
             keyName: qsTr("Active key")
             key: activeKey
             width: parent.width
-            editButton.onClicked: editKey(activeKey)
+            editButton.onClicked: editKey("active", activeKey)
         }
         KeyDelegate {
             keyName: qsTr("Posting key")
             key: postingKey
             width: parent.width
-            editButton.onClicked: editKey(postingKey)
+            editButton.onClicked: editKey("posting", postingKey)
         }
         KeyDelegate {
             keyName: qsTr("Memo key")
             key: memoKey
             width: parent.width
-            editButton.onClicked: editKey(memoKey)
+            editButton.onClicked: editKey("memo_key", memoKey)
         }
     }
 }

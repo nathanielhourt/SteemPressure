@@ -107,6 +107,15 @@ void KeyPair::fromAuthority(QVariantMap authority) {
         fromPublicKey(keyAndWeight[0].toString());
 }
 
+KeyPair* KeyPair::replaceWith(const KeyPair* other) {
+    if (other == nullptr) {
+        setKey(false);
+        return this;
+    }
+    *this = *other;
+    return this;
+}
+
 QString KeyPair::publicKey() {
     binary_key keyData;
     if (keyType() == PublicKey)
@@ -131,6 +140,17 @@ QString KeyPair::wifKey() {
     auto wifBuffer = easyBuffer + checksum;
 
     return QString::fromStdString(fc::to_base58(wifBuffer.data(), wifBuffer.size()));
+}
+
+QVariantMap KeyPair::toAuthority() {
+    return {
+        {"weight_threshold", 1},
+        {"account_auths", QVariantList()},
+        {"key_auths", QVariantList {
+                QVariantList {publicKey(), 1}
+            }
+        }
+    };
 }
 
 KeyPair::KeyType KeyPair::keyType() const {
