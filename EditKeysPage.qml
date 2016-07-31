@@ -28,5 +28,12 @@ EditKeysForm {
     privateKeyField.onAccepted: modifiedKeypair.fromWifKey(privateKeyField.text)
 
     cancelButton.onClicked: modifiedKeyPromise.reject()
-    saveButton.onClicked: modifiedKeyPromise.resolve(modifiedKeypair)
+    saveButton.onClicked: {
+        if (privateKeyField.text !== modifiedKeypair.wifKey)
+            privateKeyField.accepted()
+        else if (publicKeyField.text !== modifiedKeypair.publicKey)
+            publicKeyField.accepted()
+
+        modifiedKeyPromise.resolve(modifiedKeypair)
+    }
 }

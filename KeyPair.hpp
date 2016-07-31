@@ -32,8 +32,8 @@ public:
     explicit KeyPair(QObject *parent = 0);
     KeyPair(const KeyPair& other) { key = other.key; }
     KeyPair(KeyPair&& other) { key = std::move(other.key); }
-    KeyPair& operator=(const KeyPair& other) { key = other.key; return *this; }
-    KeyPair& operator=(KeyPair&& other) { key = std::move(other.key); return *this; }
+    KeyPair& operator=(const KeyPair& other);
+    KeyPair& operator=(KeyPair&& other);
 
     Q_INVOKABLE void generateFromSeed(QString seed);
     Q_INVOKABLE void generateRandomly();
@@ -42,13 +42,26 @@ public:
     Q_INVOKABLE void fromAuthority(QVariantMap authority);
 
     /// Makes a deep copy of this keypair. Caller takes ownership of returned KeyPair.
-    Q_INVOKABLE KeyPair* deepCopy() { return new KeyPair(*this); }
+    Q_INVOKABLE KeyPair* deepCopy() const { return new KeyPair(*this); }
     /// Overwrites this key with other
     Q_INVOKABLE KeyPair* replaceWith(const KeyPair* other);
+    /// Because QML is stupid
+    Q_INVOKABLE KeyPair* replaceWith(KeyPair* other) { return replaceWith((const KeyPair*)other); }
 
-    Q_INVOKABLE QString publicKey();
-    Q_INVOKABLE QString wifKey();
-    Q_INVOKABLE QVariantMap toAuthority();
+    /// Compare this key to other, since javascript doesn't support == operator overloading
+    /// @note Returns true if one operand is a public key and the other is a private key, but they are the same key
+    Q_INVOKABLE bool equals(const KeyPair* other);
+    Q_INVOKABLE bool equals(KeyPair* other) { return equals((const KeyPair*)other); }
+
+    Q_INVOKABLE QString publicKey() const;
+    Q_INVOKABLE QString wifKey() const;
+    Q_INVOKABLE QVariantMap toAuthority() const;
+
+    fc::ecc::private_key privateKey() const {
+        if (keyType() == PrivateKey)
+            return key.get<fc::ecc::private_key>();
+        return {};
+    }
 
     KeyType keyType() const;
 

@@ -25,8 +25,22 @@ void KeyPair::setKey(KeyStore newKey) {
 }
 
 KeyPair::KeyPair(QObject *parent)
-    : QObject(parent), key(false) {
+    : QObject(parent), key(false) {}
 
+KeyPair& KeyPair::operator=(KeyPair&& other) {
+    if (this->equals(&other) && other.keyType() != PrivateKey)
+        return *this;
+
+    setKey(std::move(other.key));
+    return *this;
+}
+
+KeyPair& KeyPair::operator=(const KeyPair& other) {
+    if (this->equals(&other) && other.keyType() != PrivateKey)
+        return *this;
+
+    setKey(other.key);
+    return *this;
 }
 
 void KeyPair::generateFromSeed(QString seed) {
@@ -38,6 +52,9 @@ void KeyPair::generateRandomly() {
 }
 
 void KeyPair::fromPublicKey(QString publicKeyString) {
+    if (publicKey() == publicKeyString)
+        return;
+
     try {
         if (!publicKeyString.startsWith(KeyPrefix)) {
             qDebug() << "Cannot create KeyPair from public key string due to invalid prefix:" << publicKeyString;
@@ -116,7 +133,15 @@ KeyPair* KeyPair::replaceWith(const KeyPair* other) {
     return this;
 }
 
-QString KeyPair::publicKey() {
+bool KeyPair::equals(const KeyPair* other) {
+    if (keyType() == NullKey && other->keyType() == NullKey)
+        return true;
+    if (keyType() == NullKey || other->keyType() == NullKey)
+        return false;
+    return publicKey() == other->publicKey();
+}
+
+QString KeyPair::publicKey() const {
     binary_key keyData;
     if (keyType() == PublicKey)
         keyData.data = key.get<fc::ecc::public_key>();
@@ -129,10 +154,12 @@ QString KeyPair::publicKey() {
     return QString::fromStdString(fc::to_base58(buffer)).prepend(KeyPrefix);
 }
 
-QString KeyPair::wifKey() {
+QString KeyPair::wifKey() const {
     std::vector<char> buffer(256/8, 0);
     if (keyType() == PrivateKey)
         buffer = fc::variant(key.get<fc::ecc::private_key>()).as<std::vector<char>>();
+    else
+        return tr("Unset");
 
     auto easyBuffer = QByteArray::fromRawData(buffer.data(), buffer.size()).prepend('\x80');
     auto checksum = QCryptographicHash::hash(easyBuffer, QCryptographicHash::Sha256);
@@ -142,7 +169,7 @@ QString KeyPair::wifKey() {
     return QString::fromStdString(fc::to_base58(wifBuffer.data(), wifBuffer.size()));
 }
 
-QVariantMap KeyPair::toAuthority() {
+QVariantMap KeyPair::toAuthority() const {
     return {
         {"weight_threshold", 1},
         {"account_auths", QVariantList()},

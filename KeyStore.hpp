@@ -18,6 +18,8 @@ public:
     /// returned. If supported, the null string is returned.
     Q_INVOKABLE QString accountUnsupportedReason(QVariantMap account);
 
+    Q_INVOKABLE AccountKeys* findAccount(QString accountName);
+
 signals:
 
 public slots:

@@ -13,13 +13,32 @@ MyKeysForm {
     KeyStore {
         id: store
     }
+    TransactionFoundry {
+        id: foundry
+        keyStore: store
+    }
+
     JsonRpcProvider {
         id: rpc
+        property int networkApi
         socket: WebSocket {
             id: socket
             active: true
             url: "wss://steemit.com/wstmp3"
-            onStatusChanged: console.log(status, errorString)
+            onStatusChanged: {
+                console.log(status, errorString)
+                if (status === WebSocket.Error) {
+                    active = false
+                    active = true
+                }
+                if (status === WebSocket.Open) {
+                    rpc.call("call", [1, "login", ["",""]]).then(function() {
+                        rpc.call("call", [1, "get_api_by_name", ["network_broadcast_api"]]).then(function(id) {
+                            rpc.networkApi = id
+                        })
+                    })
+                }
+            }
         }
     }
 
@@ -33,6 +52,13 @@ MyKeysForm {
         implicitWidth: keysForm.width
         margins: 0
         closePolicy: Popup.NoAutoClose
+
+        function openWithMessage(message, buttonText) {
+            changeKeySnackbarLabel.text = message? message : ""
+            changeKeySnackbarButton.text = buttonText? buttonText : ""
+            keyUpdateTimer.restart()
+            open()
+        }
 
         enter: Transition {
             PropertyAnimation {
@@ -50,43 +76,43 @@ MyKeysForm {
             }
         }
 
-        signal undoClicked
+        signal cancelClicked
 
         background: Rectangle {
             color: "#323232"
         }
 
+        Timer {
+            id: keyUpdateTimer
+            interval: 5000
+            repeat: false
+            onTriggered: changeKeySnackbar.close()
+        }
         RowLayout {
             anchors.top: parent.top
             width: parent.width
             spacing: 24
 
             Label {
+                id: changeKeySnackbarLabel
                 anchors.verticalCenter: parent.verticalCenter
                 Layout.fillWidth: true
-                text: qsTr("Key updated")
                 color: "white"
             }
 
             Button {
-                id: control
-                text: qsTr("Undo")
+                id: changeKeySnackbarButton
                 font.bold: true
                 anchors.verticalCenter: parent.verticalCenter
                 onClicked: {
-                    changeKeySnackbar.undoClicked()
+                    changeKeySnackbar.cancelClicked()
                     keyUpdateTimer.stop()
                     changeKeySnackbar.close()
                 }
                 background: Item{}
-                contentItem: Text { text: control.text; font: control.font; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter; color: "white" }
+                contentItem: Text { text: changeKeySnackbarButton.text; font: changeKeySnackbarButton.font; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter; color: "white" }
             }
         }
-    }
-    Timer {
-        id: keyUpdateTimer
-        interval: 5000
-        repeat: false
     }
 
     AddAccountPopup {
@@ -139,25 +165,71 @@ MyKeysForm {
         highlighted: ListView.isCurrentItem
         width: parent.width
 
+        function saveKey(key) {
+            if (key.equals(ownerKey))
+                ownerKey.replaceWith(key)
+            if (key.equals(activeKey))
+                activeKey.replaceWith(key)
+            if (key.equals(postingKey))
+                postingKey.replaceWith(key)
+            if (key.equals(memoKey))
+                memoKey.replaceWith(key)
+        }
+
         onEditKey: {
+            var backupKey = key.deepCopy()
             var page = keysForm.StackView.view.push(Qt.resolvedUrl("EditKeysPage.qml"), {keyPair: key})
             page.modifiedKeyPromise.then(function(newKey) {
-                keyUpdateTimer.restart()
-                changeKeySnackbar.open()
                 keysForm.StackView.view.pop(keysForm)
 
-                var promise = Q.promise()
-                promise.resolve(keyUpdateTimer.triggered)
-                promise.reject(changeKeySnackbar.undoClicked)
+                if (newKey.keyType === KeyPair.NullKey) {
+                    changeKeySnackbar.openWithMessage(qsTr("I'm sorry, Dave. I'm afraid I can't do that"),
+                                                      qsTr("Dismiss"))
+                    return "pass"
+                }
+                if (key.equals(newKey)) {
+                    if (key.keyType === KeyPair.PublicKey && newKey.keyType === KeyPair.PrivateKey) {
+                        saveKey(newKey)
+                        changeKeySnackbar.openWithMessage(qsTr("Private key saved"), qsTr("Dismiss"))
+                    } else
+                        changeKeySnackbar.openWithMessage(qsTr("Key not changed"), qsTr("Dismiss"))
+                    return "pass"
+                }
 
-                return promise.then(function() { return newKey })
+                changeKeySnackbar.openWithMessage(qsTr("Updating key"), qsTr("Cancel"))
+
+                // Generate/sign the transaction now...
+                var promise = rpc.call("get_dynamic_global_properties", []).then(function(properties) {
+                    return foundry.keyUpdateTransaction(name, authorityLevel, newKey, properties.head_block_id)
+                })
+                promise = Q.all([promise, keyUpdateTimer.triggered])
+                promise.reject(changeKeySnackbar.cancelClicked)
+
+                // So we can replace the key (and update the UI) without losing the ability to sign
+                key.replaceWith(newKey)
+
+                return promise.then(function(list) { return list[0] })
             }, function() {
                 keysForm.StackView.view.pop(keysForm)
-            }).then(function(newKey) {
+            }).then(function(trx) {
+                if (!trx || trx === "pass")
+                    return
+
                 changeKeySnackbar.close()
-                console.log("Update key from", key.publicKey, "to", newKey.publicKey)
+                console.log("Update key", JSON.stringify(trx))
+                return rpc.call("call", [rpc.networkApi, "broadcast_transaction_synchronous", [trx]])
             }, function() {
                 console.log("Key update canceled")
+            }).then(function(confirmation) {
+                console.log(JSON.stringify(confirmation))
+                return rpc.call("get_accounts", [[name]])
+            }, function(error) {
+                changeKeySnackbar.openWithMessage(qsTr("It didn't work :("), qsTr("Dismiss"))
+                console.error("Key update failed:", JSON.stringify(error))
+                key.replaceWith(backupKey)
+                return rpc.call("get_accounts", [[name]])
+            }).then(function(accounts) {
+                store.addAccount(accounts[0])
             })
         }
     }

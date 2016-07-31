@@ -19,15 +19,29 @@ QString KeyStore::accountUnsupportedReason(QVariantMap account) {
     return QString::null;
 }
 
+AccountKeys* KeyStore::findAccount(QString accountName) {
+    auto itr = std::find_if(m_accountList->begin(), m_accountList->end(), [accountName](const AccountKeys* keys) {
+        return keys->name() == accountName;
+    });
+
+    if (itr == m_accountList->end())
+        return nullptr;
+    return *itr;
+}
+
 void KeyStore::addAccount(QVariantMap account) {
     if (!accountUnsupportedReason(account).isEmpty())
         return;
 
-    auto accountKeys = std::unique_ptr<AccountKeys>(new AccountKeys(this));
+    AccountKeys* accountKeys(findAccount(account["name"].toString()));
+    if (accountKeys == nullptr) {
+        accountKeys = new AccountKeys(this);
+        m_accountList->append(accountKeys);
+    }
+
     accountKeys->setName(account["name"].toString());
     accountKeys->ownerKey()->fromAuthority(account["owner"].toMap());
     accountKeys->activeKey()->fromAuthority(account["active"].toMap());
     accountKeys->postingKey()->fromAuthority(account["posting"].toMap());
     accountKeys->memoKey()->fromPublicKey(account["memo_key"].toString());
-    m_accountList->append(accountKeys.release());
 }

@@ -8,7 +8,7 @@ Project {
 
         Depends { name: "Qt"; submodules: ["quick", "network", "websockets"] }
         Depends { name: "cpp" }
-        Depends { name: "fc" }
+        Depends { name: "steem" }
         Depends { name: "libqtqmltricks-qtqmlmodels" }
 
         cpp.cxxLanguageVersion: "c++14"
@@ -25,6 +25,8 @@ Project {
             "Promise.hpp",
             "QmlJsonRpcProvider.cpp",
             "QmlJsonRpcProvider.hpp",
+            "TransactionFoundry.cpp",
+            "TransactionFoundry.hpp",
             "main.cpp",
             "qml.qrc",
             "vendor/QuickPromise/qptimer.h",

@@ -2,6 +2,7 @@
 #include "KeyStore.hpp"
 #include "AccountKeys.hpp"
 #include "QmlJsonRpcProvider.hpp"
+#include "TransactionFoundry.hpp"
 
 #include <QtQmlTricksPlugin_SmartDataModels.h>
 
@@ -13,6 +14,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
+    QQmlDebuggingEnabler e;
+
     QQmlApplicationEngine engine;
 
     // For benlau's quickpromise library
@@ -20,6 +23,7 @@ int main(int argc, char *argv[])
 
     registerQtQmlTricksSmartDataModel(&engine);
 
+    qmlRegisterType<TransactionFoundry>("com.nathanhourt.steem.crypto", 1, 0, "TransactionFoundry");
     qmlRegisterType<KeyPair>("com.nathanhourt.steem.crypto", 1, 0, "KeyPair");
     qmlRegisterType<KeyStore>("com.nathanhourt.steem.accounts", 1, 0, "KeyStore");
     qmlRegisterType<AccountKeys>("com.nathanhourt.steem.accounts", 1, 0, "AccountKeys");
