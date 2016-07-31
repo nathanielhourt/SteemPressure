@@ -9,6 +9,7 @@ import QuickPromise 1.0
 
 MyKeysForm {
     id: keysForm
+    property alias keyStore: store
 
     KeyStore {
         id: store
@@ -221,7 +222,8 @@ MyKeysForm {
             }, function() {
                 console.log("Key update canceled")
             }).then(function(confirmation) {
-                console.log(JSON.stringify(confirmation))
+                if (confirmation)
+                    console.log(JSON.stringify(confirmation))
                 return rpc.call("get_accounts", [[name]])
             }, function(error) {
                 changeKeySnackbar.openWithMessage(qsTr("It didn't work :("), qsTr("Dismiss"))

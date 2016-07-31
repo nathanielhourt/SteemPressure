@@ -13,6 +13,10 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+    app.setOrganizationName("Nathan Hourt");
+    app.setOrganizationDomain("nathanhourt.com");
+    app.setApplicationName("Steem Pressure");
+    app.setApplicationVersion("1.0 Beta");
 
     QQmlDebuggingEnabler e;
 

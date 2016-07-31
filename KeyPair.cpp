@@ -22,6 +22,7 @@ void KeyPair::setKey(KeyStore newKey) {
         emit keyTypeChanged(keyType());
     emit publicKeyChanged(publicKey());
     emit wifKeyChanged(wifKey());
+    emit updated();
 }
 
 KeyPair::KeyPair(QObject *parent)

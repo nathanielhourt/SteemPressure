@@ -24,6 +24,7 @@ Popup {
     default property alias contents: clientArea.data
     property alias cancelButton: cancelButton
     property alias acceptButton: acceptButton
+    property alias showButtons: buttonRow.visible
 
     ColumnLayout {
         anchors.fill: parent
@@ -34,6 +35,7 @@ Popup {
             Layout.fillHeight: true
         }
         Row {
+            id: buttonRow
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             spacing: 10

@@ -11,6 +11,11 @@ class KeyStore : public QObject
 {
     Q_OBJECT
     QML_OBJMODEL_PROPERTY(AccountKeys, accountList)
+    Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
+    Q_PROPERTY(bool hasPersistedData READ hasPersistedData NOTIFY hasPersistedDataChanged)
+
+    QString m_password;
+
 public:
     explicit KeyStore(QObject *parent = 0);
 
@@ -20,10 +25,22 @@ public:
 
     Q_INVOKABLE AccountKeys* findAccount(QString accountName);
 
-signals:
+    Q_INVOKABLE bool hasPersistedData();
+    Q_INVOKABLE bool restore();
+
+    QString password() const { return m_password; }
 
 public slots:
     void addAccount(QVariantMap account);
+    void persist();
+    void resetPersistence();
+    void setPassword(QString password);
+
+signals:
+    void passwordChanged(QString password);
+    void hasPersistedDataChanged(bool);
 };
+
+
 
 #endif // KEYSTORE_HPP

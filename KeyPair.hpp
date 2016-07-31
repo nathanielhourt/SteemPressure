@@ -15,7 +15,9 @@ class KeyPair : public QObject
     Q_PROPERTY(QString wifKey READ wifKey NOTIFY wifKeyChanged)
 
     // If type is bool, no key is set. Value is irrelevant.
+public:
     using KeyStore = fc::static_variant<bool, fc::ecc::public_key, fc::ecc::private_key>;
+private:
     KeyStore key;
     void setKey(KeyStore newKey);
 
@@ -40,6 +42,7 @@ public:
     Q_INVOKABLE void fromPublicKey(QString publicKey);
     Q_INVOKABLE void fromWifKey(QString wifKey);
     Q_INVOKABLE void fromAuthority(QVariantMap authority);
+    void fromKeyStore(KeyStore store) { setKey(store); }
 
     /// Makes a deep copy of this keypair. Caller takes ownership of returned KeyPair.
     Q_INVOKABLE KeyPair* deepCopy() const { return new KeyPair(*this); }
@@ -62,6 +65,9 @@ public:
             return key.get<fc::ecc::private_key>();
         return {};
     }
+    KeyStore keyStore() const {
+        return key;
+    }
 
     KeyType keyType() const;
 
@@ -71,6 +77,7 @@ signals:
     void keyTypeChanged(KeyType);
     void publicKeyChanged(QString);
     void wifKeyChanged(QString);
+    void updated();
 
 public slots:
 };

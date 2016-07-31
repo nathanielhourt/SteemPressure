@@ -31,6 +31,7 @@ public:
 
 signals:
     void nameChanged(QString name);
+    void updated();
 
 public slots:
     void setName(QString name);
