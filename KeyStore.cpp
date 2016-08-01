@@ -35,9 +35,9 @@ AccountKeys* KeyStore::findAccount(QString accountName) {
     return *itr;
 }
 
-void KeyStore::addAccount(QVariantMap account) {
+AccountKeys* KeyStore::addAccount(QVariantMap account) {
     if (!accountUnsupportedReason(account).isEmpty())
-        return;
+        return nullptr;
 
     AccountKeys* accountKeys(findAccount(account["name"].toString()));
     if (accountKeys == nullptr) {
@@ -51,6 +51,8 @@ void KeyStore::addAccount(QVariantMap account) {
     accountKeys->activeKey()->fromAuthority(account["active"].toMap());
     accountKeys->postingKey()->fromAuthority(account["posting"].toMap());
     accountKeys->memoKey()->fromPublicKey(account["memo_key"].toString());
+
+    return accountKeys;
 }
 
 struct PersistenceData {

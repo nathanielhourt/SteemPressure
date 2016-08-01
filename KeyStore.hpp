@@ -24,14 +24,17 @@ public:
     Q_INVOKABLE QString accountUnsupportedReason(QVariantMap account);
 
     Q_INVOKABLE AccountKeys* findAccount(QString accountName);
+    Q_INVOKABLE AccountKeys* addAccount(QVariantMap account);
 
     Q_INVOKABLE bool hasPersistedData();
     Q_INVOKABLE bool restore();
 
+    /// Because QML can't make them on its own...
+    Q_INVOKABLE static KeyPair* makeKeyPair() { return new KeyPair(); }
+
     QString password() const { return m_password; }
 
 public slots:
-    void addAccount(QVariantMap account);
     void persist();
     void resetPersistence();
     void setPassword(QString password);

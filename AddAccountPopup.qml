@@ -4,18 +4,18 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 ShadowedPopup {
-    onOpened: accountNameField.forceActiveFocus()
-    onClosed: accountNameField.text = ""
+    onOpened: newKeyField.forceActiveFocus()
+    onClosed: newKeyField.text = ""
     acceptButton.text: qsTr("Add Account")
     cancelButton.text: qsTr("Don't Add")
 
-    property alias accountNameField: accountNameField
+    property alias newKeyField: newKeyField
     property alias infoLabel: infoLabel
 
     TextField {
-        id: accountNameField
+        id: newKeyField
         anchors.centerIn: parent
-        placeholderText: qsTr("Account name")
+        placeholderText: qsTr("Private key")
         onAccepted: {
             if (acceptButton.enabled)
                 acceptButton.clicked()
@@ -23,9 +23,12 @@ ShadowedPopup {
     }
     Label {
         id: infoLabel
-        anchors.top: accountNameField.bottom
+        wrapMode: Label.WrapAtWordBoundaryOrAnywhere
+        anchors.top: newKeyField.bottom
         anchors.topMargin: 4
-        anchors.left: accountNameField.left
+        anchors.left: newKeyField.left
+        anchors.right: parent.right
+        anchors.rightMargin: 4
         Behavior on text {
             SequentialAnimation {
                 PropertyAnimation {

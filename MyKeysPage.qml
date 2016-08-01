@@ -121,7 +121,8 @@ MyKeysForm {
         x: parent.width / 2 - width / 2
         y: parent.height / 2 - height / 2
 
-        property var account
+        property var accounts: []
+        property var accountKey: store.makeKeyPair()
 
         Timer {
             id: accountLookupTimer
@@ -129,20 +130,33 @@ MyKeysForm {
             repeat: false
 
             onTriggered: {
-                if (addAccountPopup.accountNameField.text) {
+                if (addAccountPopup.newKeyField.text) {
                     addAccountPopup.infoLabel.text = qsTr("Tis loadin'")
-                    rpc.call("get_accounts", [[addAccountPopup.accountNameField.text]]).then(function(accounts) {
+                    var accountKey = addAccountPopup.accountKey
+                    accountKey.fromWifKey(addAccountPopup.newKeyField.text)
+                    if (accountKey.keyType !== KeyPair.PrivateKey) {
+                        addAccountPopup.infoLabel.text = qsTr("That doesn't appear to be a valid key")
+                        return
+                    }
+
+                    rpc.call("get_key_references", [[accountKey.publicKey]]).then(function(stuff) {
+                        var accounts = stuff.reduce(function(prev, next) { return prev.concat(next) }, [])
+                        return rpc.call("get_accounts", [accounts])
+                    }).then(function(accounts) {
+                        accounts = accounts.filter(function(account) {
+                            return store.accountUnsupportedReason(account) === ""
+                        })
                         if (accounts.length) {
-                            var unsupportedReason = store.accountUnsupportedReason(accounts[0])
-                            if (unsupportedReason) {
-                                addAccountPopup.infoLabel.text = qsTr("I don't support this kind of account yet:\n") +
-                                        unsupportedReason
-                                return
-                            }
-                            addAccountPopup.account = accounts[0]
-                            addAccountPopup.infoLabel.text = qsTr("Good to go!")
+                            addAccountPopup.accounts = accounts
+                            var accountsString = ""
+                            for (var i = 0; i < accounts.length; ++i)
+                                if (accountsString)
+                                    accountsString += ", " + accounts[i].name
+                                else
+                                    accountsString = accounts[i].name
+                            addAccountPopup.infoLabel.text = qsTr("Importing ") + accountsString
                         } else {
-                            addAccountPopup.infoLabel.text = qsTr("That account doesn't exist :(")
+                            addAccountPopup.infoLabel.text = qsTr("That key doesn't belong to any supported accounts :(")
                         }
                     })
                 } else {
@@ -151,10 +165,21 @@ MyKeysForm {
             }
         }
 
-        accountNameField.onTextChanged: accountLookupTimer.restart()
-        acceptButton.enabled: typeof(account) === "object" && account.name === accountNameField.text
+        newKeyField.onTextChanged: accountLookupTimer.restart()
+        acceptButton.enabled: accounts && accounts.length
         acceptButton.onClicked: {
-            store.addAccount(account)
+            for (var i = 0; i < accounts.length; ++i) {
+                var account = store.addAccount(accounts[i])
+                if (account.ownerKey.equals(accountKey))
+                    account.ownerKey.replaceWith(accountKey)
+                if (account.activeKey.equals(accountKey))
+                    account.activeKey.replaceWith(accountKey)
+                if (account.postingKey.equals(accountKey))
+                    account.postingKey.replaceWith(accountKey)
+                if (account.memoKey.equals(accountKey))
+                    account.memoKey.replaceWith(accountKey)
+            }
+
             close()
         }
         cancelButton.onClicked: close()
