@@ -18,8 +18,6 @@ int main(int argc, char *argv[])
     app.setApplicationName("Steem Pressure");
     app.setApplicationVersion("1.0 Beta");
 
-    QQmlDebuggingEnabler e;
-
     QQmlApplicationEngine engine;
 
     // For benlau's quickpromise library
