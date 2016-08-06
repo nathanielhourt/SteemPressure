@@ -13,6 +13,7 @@ Project {
 
         cpp.cxxLanguageVersion: "c++14"
         cpp.includePaths: "vendor/QuickPromise"
+        cpp.rpaths: qbs.hostOS.contains("osx")? ["@executable_path/../Frameworks"] : []
 
         files: [
             "AccountKeys.cpp",
