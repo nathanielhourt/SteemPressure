@@ -25,7 +25,7 @@ MyKeysForm {
         socket: WebSocket {
             id: socket
             active: true
-            url: "wss://steemit.com/wstmp3"
+            url: "wss://steemit.com/wspa"
             onStatusChanged: {
                 console.log(status, errorString)
                 if (status === WebSocket.Error) {
