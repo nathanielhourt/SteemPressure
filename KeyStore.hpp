@@ -42,6 +42,7 @@ public slots:
 signals:
     void passwordChanged(QString password);
     void hasPersistedDataChanged(bool);
+    void restored();
 };
 
 

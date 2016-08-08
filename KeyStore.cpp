@@ -126,6 +126,7 @@ bool KeyStore::restore() {
         return false;
     }
 
+    emit restored();
     return true;
 }
 

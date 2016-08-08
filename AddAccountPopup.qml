@@ -15,7 +15,7 @@ ShadowedPopup {
     TextField {
         id: newKeyField
         anchors.centerIn: parent
-        placeholderText: qsTr("Private key")
+        placeholderText: qsTr("Private key or account password")
         onAccepted: {
             if (acceptButton.enabled)
                 acceptButton.clicked()

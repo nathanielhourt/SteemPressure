@@ -15,7 +15,11 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     app.setOrganizationName("Nathan Hourt");
     app.setOrganizationDomain("nathanhourt.com");
+#ifdef NDEBUG
     app.setApplicationName("Steem Pressure");
+#else
+    app.setApplicationName("Steem Pressure Debug");
+#endif
     app.setApplicationVersion("1.0 Beta");
 
     QQmlApplicationEngine engine;
