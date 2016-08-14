@@ -10,4 +10,8 @@ Please note that at this point, Steem Pressure is considered a beta, and while I
 I would like to provide binaries for Windows and Mac; however, I am unable to build Steem on Windows and thus cannot build Steem Pressure. Others have succeeded in building Steem on Windows, so I would appreciate it if someone could give me some pointers on how to do it. Mac binaries are available in the Releases section.
 
 ## Build Instructions
-Steem Pressure is designed to be light on dependencies, and thus the only externally required dependencies are Qt (with qbs) and Steem. As Steem is linked statically, it is a build-time dependency only. Steem Pressure uses qbs as its build system, and as such, does not require a configure step. Ensure the `STEEM_PATH` environment variable is set to the path Steem is installed to, then simply run `qbs` to build.
+Steem Pressure is designed to be light on dependencies, and thus the only externally required dependencies are Qt 5.7+ (with qbs) and Steem. As Steem is linked statically, it is a build-time dependency only. Steem Pressure uses qbs as its build system, and as such, does not require a configure step. Ensure the `STEEM_PATH` environment variable is set to the path Steem is installed to, then simply run `qbs` to build.
+
+**Notes**
+- Some Linux distributions, such as Ubuntu, do not ship recent versions of Qt, thus it will be necessary to download an up-to-date copy from https://qt.io.
+- Steemit has not merged my pull request which fixes FC's installation. Make sure to merge https://github.com/cryptonomex/fc/pull/50 into fc (located at libraries/fc in the Steem repo) prior to installing it
