@@ -14,6 +14,4 @@ Steem Pressure is designed to be light on dependencies, and thus the only extern
 
 **Notes**
 - Some Linux distributions, such as Ubuntu, do not ship recent versions of Qt, thus it will be necessary to download an up-to-date copy from https://qt.io.
-- Steemit has not merged my pull request which fixes FC's installation
- - Make sure to merge https://github.com/cryptonomex/fc/pull/50 into fc (located at libraries/fc in the Steem repo) prior to installing it
- - Alternatively, get steem from [my fork](https://github.com/nathanhourt/steem) which uses an already-patched fc
+- Steemit's repo for Steem has broken installation. This is fixed in [my fork](https://github.com/nathanhourt/steem), so for now it will be easiest to build/install Steem from my fork
